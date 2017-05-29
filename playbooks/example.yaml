@@ -1,0 +1,10 @@
+---
+- name: Execute a particular code example
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  roles:
+    - describe_examples
+    - get_user_input
+    - run_example
