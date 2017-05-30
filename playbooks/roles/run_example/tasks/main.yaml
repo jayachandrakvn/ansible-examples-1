@@ -1,3 +1,11 @@
 ---
-- name: "Print something..."
-  debug: msg="{{ 'role= ' + role_path }}"
+- set_fact:
+    res_file: "/tmp/ansible_{{inventory_hostname}}.txt"
+
+- name: "Run '{{inventory_hostname}}' example"
+  template: >
+    src="templates/common.j2"
+    dest="{{res_file}}"
+
+- name: "Display results for '{{inventory_hostname}}' example"
+  debug: msg="{{ lookup('file', res_file).split('\n') }}"

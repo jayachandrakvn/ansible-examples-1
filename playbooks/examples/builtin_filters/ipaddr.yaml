@@ -1,9 +1,18 @@
 ---
 description: various operations performed on IP address/IP network objects
 
-common_data:
-  ip_addr: '10.20.30.44/25'
+source_data:
+  ip_addr: "10.20.30.43/28"
 
 examples:
-  - name: get network mask: 255.0.0.0 style
-    exec: "{{ common_data.ip_addr | ipaddr('netmask') }}"
+  - code: "source_data.ip_addr | ipaddr('netmask')"
+    result: "{{ source_data.ip_addr | ipaddr('netmask') }}"
+  - code: "source_data.ip_addr | ipaddr('hostmask')"
+    result: "{{ source_data.ip_addr | ipaddr('hostmask') }}"
+  - code: "source_data.ip_addr | ipaddr('0')"
+    comment: "The base subnet that IP address belongs to"
+    result: "{{ source_data.ip_addr | ipaddr('0') }}"
+  - code: "source_data.ip_addr | ipaddr('address')"
+    result: "{{ source_data.ip_addr | ipaddr('address') }}"
+  - code: "source_data.ip_addr | ipaddr('size')"
+    result: "{{ source_data.ip_addr | ipaddr('size') }}"
