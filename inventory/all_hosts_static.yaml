@@ -1,3 +1,9 @@
-[all]
-host1
-host2
+#
+# Static inventory file
+# which will be merged with dynamic inventory
+#
+
+# For demo purposes only!
+# fake entry only to display help message
+[help_section]
+help

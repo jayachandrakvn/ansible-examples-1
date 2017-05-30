@@ -102,3 +102,4 @@ ENV/
 
 roles/
 main.log
+.DS_Store

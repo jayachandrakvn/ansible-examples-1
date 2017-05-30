@@ -1,3 +1,16 @@
 ---
-- name: "Print something..."
-  debug: msg="{{ 'role: ' + role_path }}"
+- name: "Discover all categories available"
+  shell: "ls -1 {{playbook_dir}}/examples"
+  register: dir_list
+
+- set_fact:
+    example_categories: "{{ dir_list.stdout_lines }}"
+
+- name: "Collect short description for each category"
+  shell: "cat {{playbook_dir}}/examples/{{item}}/description.txt"
+  register: res
+  ignore_errors: yes
+  with_items: "{{ example_categories }}"
+
+- name: "Display short descriptions for each category"
+  debug: msg="{{ res.results | print_list_results }}"
