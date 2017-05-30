@@ -5,6 +5,5 @@
   gather_facts: no
 
   roles:
-    - describe_examples
-    - get_user_input
-    - run_example
+    - { role: describe_examples, when: inventory_hostname == 'help' }
+    - { role: run_example,       when: inventory_hostname != 'help' }
