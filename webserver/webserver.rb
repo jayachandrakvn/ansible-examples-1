@@ -15,7 +15,7 @@ helper = FsTree::FsTree.new(root + EXAMPLES_DIR)
 
 all_ansible_hosts = helper.all_examples.merge(
   '_meta' => {
-    'hostvars' => {}
+    'hostvars' => helper.all_meta
   }
 )
 

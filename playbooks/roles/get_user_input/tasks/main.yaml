@@ -1,3 +1,0 @@
----
-- name: "Print something..."
-  debug: msg="{{ 'role= ' + role_path }}"

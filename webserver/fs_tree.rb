@@ -1,13 +1,8 @@
-require "pathname"
+require 'yaml'
 
 module FsTree
-  class FsTree
+  class FsTreeRoot
     attr_reader :root_folder, :sections
-
-    def initialize(root)
-      @root_folder = root
-      @sections = dir_list(root)
-    end
 
     def dir_list(dir)
       Dir.chdir(dir)
@@ -16,19 +11,58 @@ module FsTree
       end.sort
     end
 
+    def initialize(root)
+      @root_folder = root
+      @sections = dir_list(root)
+    end
+  end
+
+  class FsTreeFiles
+    attr_reader :section_path, :filenames
+
     def file_list(dir)
       Dir.chdir(dir)
-      Dir.glob('*.yaml').select {|f| File.file? f}.map do |f|
-        f.gsub(/\.yaml$/, '')
-      end.sort
+      Dir.glob('*.yaml').select {|f| File.file? f}
+    end
+
+    def initialize(section_path)
+      @section_path = section_path
+      @filenames = file_list(section_path)
+    end
+
+    def filename2hostname(filename)
+      filename.gsub(/\.yaml$/, '')
+    end
+
+    def hostnames
+      filenames.map { |file| filename2hostname(file) }.sort
+    end
+
+    def hostvars
+      filenames.inject({}) do |tmphash, filename|
+        hostname = filename2hostname(filename)
+        tmphash[hostname] = YAML.load(File.read(section_path + '/' + filename))
+        tmphash
+      end
+    end
+  end
+
+  class FsTree
+    attr_reader :root_obj, :file_examples
+
+    def initialize(root)
+      @root_obj = FsTreeRoot.new(root)
+      @file_examples = root_obj.sections.inject({}) do |tmphash, section|
+        tmphash[section] = FsTreeFiles.new(root + '/' + section)
+        tmphash
+      end
     end
 
     def generate_each_section
-      new_hash = {}
-      sections.each do |section|
-        new_hash[section] = file_list(root_folder + '/' + section)
+      root_obj.sections.inject({}) do |tmphash, section|
+        tmphash[section] = file_examples[section].hostnames
+        tmphash
       end
-      new_hash
     end
 
     def all_sections
@@ -37,6 +71,13 @@ module FsTree
 
     def all_examples
       { 'all' => all_sections }.merge(generate_each_section)
+    end
+
+    def all_meta
+      root_obj.sections.inject({}) do |tmphash, section|
+        tmphash.merge!(file_examples[section].hostvars)
+        tmphash
+      end
     end
   end
 end
