@@ -14,3 +14,16 @@ Then you should be able to run ansible-playbook command like this:
 ansible-playbook playbooks/example.yaml
 ```
 which will give you a list of examples that you may execute and see what they produce (and examine their code, if interested).
+
+The next step (after you see a list of examples' groups available from previous command)
+would be to start a local web server that will support Ansible dynamic
+inventory. For that you would need to run command similar to this:
+```
+webserver/webserver.rb  2> /dev/null &
+```
+
+Now each example group (a folder on a local file system) would be
+addressable via "-l" argument of ansible-playbook command:
+```
+ansible-playbook playbooks/example.yaml -l builtin_filters
+```
