@@ -26,6 +26,8 @@ ok: [help] => {
     ]
 }
 ```
+The trick here is - we use static inventory file that has a single host entry called 'help'. The output you see is simply what is designed to show when "{{ inventory_hostname == 'help'}}". But if you enable dynamic inventory (see next step - how to start a local web server), then you will have more targets to play with in your inventory.
+
 ## Start local webserver to support dynamic inventory
 The next step (after you see a list of examples' groups available from previous command)
 would be to start a local web server that will support Ansible dynamic
