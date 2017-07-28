@@ -1,8 +1,8 @@
-## Welcome to Ansible examples by OpenTable!
+# Welcome to Ansible examples by OpenTable!
 
 Please check out our SF Ansiblefest 2017 presentation [here](Ansiblefest2017/Ansiblefest_2017_OT.pdf)
 
-# Interactive play with examples
+## Interactive play with examples
 If you wish to have hands-on experience with all examples and code fragments available in this repo, you may want to build python virtual environment by following those steps:
 - sudo pip install virtualenv
 - virtualenv --no-site-packages venv
@@ -26,7 +26,7 @@ ok: [help] => {
     ]
 }
 ```
-# Start local webserver to support dynamic inventory
+## Start local webserver to support dynamic inventory
 The next step (after you see a list of examples' groups available from previous command)
 would be to start a local web server that will support Ansible dynamic
 inventory. For that you would need to run command similar to this:
