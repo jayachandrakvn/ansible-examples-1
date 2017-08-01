@@ -37,6 +37,7 @@ inventory. For that you would need to run command similar to this:
 ```
 webserver/webserver.rb  2> /dev/null &
 ```
+### Disclosure: This is primitive WEB server! If you modify the content of the examples, or add new ones, you will have to restart the WEB server to force it to read new files from the disk...
 
 Now each example group (a folder on a local file system) would be
 addressable via "-l" argument of ansible-playbook command:
