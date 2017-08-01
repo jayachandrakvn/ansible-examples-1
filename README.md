@@ -1,6 +1,8 @@
 # Welcome to Ansible examples by OpenTable!
 
-Please check out our SF Ansiblefest 2017 presentation [here](Ansiblefest2017/Ansiblefest_2017_OT.pdf)
+Please check out our SF Ansiblefest 2017 "Case Study" presentation suitable for any audience [here](Ansiblefest2017/OT_case_study.pdf)
+
+Another "deep dive" version (for geeks only) is available [here](Ansiblefest2017/OT_deep_dive.pdf)
 
 ## Interactive play with examples
 If you wish to have hands-on experience with all examples and code fragments available in this repo, you may want to build python virtual environment by following those steps:
