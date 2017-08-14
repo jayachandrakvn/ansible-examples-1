@@ -4,7 +4,7 @@
 
 - name: "Run '{{inventory_hostname}}' example"
   template: >
-    src="templates/common.j2"
+    src="common.j2"
     dest="{{res_file}}"
 
 - name: "Display results for '{{inventory_hostname}}' example"

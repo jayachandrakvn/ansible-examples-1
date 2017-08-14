@@ -100,6 +100,6 @@ ENV/
 # mypy
 .mypy_cache/
 
-roles/
+/roles/
 main.log
 .DS_Store

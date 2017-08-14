@@ -1,0 +1,7 @@
+---
+- name: "Discover all categories available"
+  shell: "ls -1 {{playbook_dir}}/examples"
+  register: dir_list
+
+- set_fact:
+    category: "{{ dir_list.stdout_lines | default([]) }}"
