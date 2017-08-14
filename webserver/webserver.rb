@@ -6,12 +6,12 @@ require 'json'
 require_relative 'fs_tree.rb'
 
 PORT = 8880
-EXAMPLES_DIR = '/../playbooks/examples'
+EXAMPLES_DIR = '../playbooks/examples'
 
 root = File.dirname(File.expand_path(__FILE__))
 server = WEBrick::HTTPServer.new(Port: PORT, DocumentRoot: root + '/empty')
 
-helper = FsTree::FsTree.new(root + EXAMPLES_DIR)
+helper = FsTree::FsTree.new(root + '/' + EXAMPLES_DIR)
 
 all_ansible_hosts = helper.all_examples.merge(
   '_meta' => {
