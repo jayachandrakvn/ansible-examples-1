@@ -1,0 +1,9 @@
+This is code example '{{inventory_hostname}}':
+-----------------------------------------------
+Description: {{ description | default("not_found") }}
+Source data: {{ source_data | default("not_found") }}
+
+Test series:
+~~~~~~~~~~~~~
+{{ examples | default("not_found") | to_nice_yaml }}
+-----------------------------------------------

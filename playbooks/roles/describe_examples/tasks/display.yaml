@@ -1,0 +1,10 @@
+---
+#
+# We are using our own custom filter 'print_list_results'
+# (check filter_plugins/print_list_results.py for details)
+#
+
+#- debug: var=descr
+
+- name: "Display short descriptions for each category"
+  debug: msg="{{ descr.results | print_list_results }}"
