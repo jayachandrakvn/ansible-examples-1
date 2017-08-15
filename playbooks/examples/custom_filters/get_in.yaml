@@ -1,0 +1,22 @@
+---
+description:
+  - "very useful filter to extract nested data (we use it *a lot*)"
+  - "it is a nice alternative to recursive | default('') when"
+  - "you need to deal with several nested layers - each of them may"
+  - "or may not be properly defined - external data might be inconsistent"
+
+source_data:
+  not_very:
+    deeply: foo
+  very:
+    deeply:
+      nested:
+        data: bar
+
+examples:
+  - code:      "source_data | get_in(['very', 'deeply', 'nested', 'data'])"
+    result: "{{ source_data | get_in(['very', 'deeply', 'nested', 'data']) }}"
+  - code:      "source_data | get_in(['not_very', 'deeply', 'XXX'], 'NOTFOUND')"
+    result: "{{ source_data | get_in(['not_very', 'deeply', 'XXX'], 'NOTFOUND') }}"
+  - code:      "source_data | get_in(['not_very', 'deeply'], 'NOTFOUND')"
+    result: "{{ source_data | get_in(['not_very', 'deeply'], 'NOTFOUND') }}"
