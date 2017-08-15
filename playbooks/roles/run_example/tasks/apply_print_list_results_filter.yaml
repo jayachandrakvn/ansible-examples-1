@@ -1,6 +1,6 @@
 ---
 - set_fact:
     examples: {
-      'code': "ource_data.results | print_list_results('inner_item')",
+      'code': "source_data.results | print_list_results('inner_item')",
       'result': "{{ source_data.results | print_list_results('inner_item') }}"
     }

@@ -4,6 +4,20 @@
   connection: local
   gather_facts: no
 
+  #
+  # This is a little bit tricky - only to overcome Ansible rigidness...
+  #
+  # We want to display only summary of options available
+  # when user runs playbook without limiting the scope (-l)
+  #
+  # As soon as user learns what options are available,
+  # she will apply -l option, and only then a specific group
+  # of examples (not all the examples) will be executed
+  #
+  # This is a simple protection from generating too much output
+  # if the scope is not limited.
+  #
+
   roles:
-    - { role: describe_examples, when: inventory_hostname == 'help' }
-    - { role: run_example,       when: inventory_hostname != 'help' }
+    - { role: describe_examples, when: "inventory_hostname == 'help'" }
+    - { role: run_example,       when: "'help' not in play_hosts" }
