@@ -1,5 +1,5 @@
 ---
-description: various operations performed on IP address/IP network objects
+description: "operations performed on IP address object"
 
 source_data:
   ip_addr: "10.20.30.43/28"

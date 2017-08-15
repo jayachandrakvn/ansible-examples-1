@@ -1,0 +1,18 @@
+---
+#
+# Run some shell command and register output in Ansible variable.
+#
+# This is only needed as support step to show how custom
+# python filter 'print_list_results' can be used.
+# Instead of generating fake dict by hand we simply capturing
+# a result of real command as variable
+#
+
+- shell: "echo 'Hello, {{ inner_item }}!'"
+  ignore_errors: yes
+  with_items:
+    - 'Mark'
+    - 'Dorothy'
+  loop_control:          # avoid nested loops name collision
+    loop_var: inner_item # re-define 'item' as it seems fit
+  register: source_data

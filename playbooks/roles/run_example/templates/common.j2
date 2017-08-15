@@ -1,7 +1,22 @@
 This is code example '{{inventory_hostname}}':
 -----------------------------------------------
-Description: {{ description | default("not_found") }}
-Source data: {{ source_data | default("not_found") }}
+
+Description:
+~~~~~~~~~~~~
+{{ description | default("not_found") | to_nice_yaml }}
+
+Source data:
+~~~~~~~~~~~~
+{{ source_data | default("not_found") | pprint }}
+
+run_ansible_tasks:
+~~~~~~~~~~~~~~~~~~
+{{ run_ansible_tasks | default("not_found") | to_nice_yaml}}
+{% for f in run_ansible_tasks | default([]) %}
+
+File: {{ f }}
+{{ lookup('file', playbook_dir + '/roles/run_example/tasks/' + f).split('\n') | to_nice_yaml }}
+{% endfor                                   %}
 
 Test series:
 ~~~~~~~~~~~~~

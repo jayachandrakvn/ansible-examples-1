@@ -2,6 +2,9 @@
 - set_fact:
     res_file: "/tmp/ansible_{{inventory_hostname}}.txt"
 
+- include: "{{ item }}"
+  with_items: "{{ run_ansible_tasks | default([])}}"
+
 - name: "Run '{{inventory_hostname}}' example"
   template: >
     src="common.j2"
