@@ -1,0 +1,13 @@
+description:
+  - 'extract two attributes from Ansible variable which was'
+  - 'registered as result of execution of ansible shell module'
+
+run_ansible_tasks:
+  # we know that 'register_shell_output_as_var.yaml'
+  # will register its results in 'source_data' variable
+  - 'register_shell_output_as_var.yaml'
+
+  # we know that 'apply_print_list_results_filter.yaml'
+  # play will be produce a variable 'examples' with
+  # following structure: { 'code': '...', 'result': '...' }
+  - 'apply_print_list_results_filter.yaml'

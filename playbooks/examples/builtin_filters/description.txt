@@ -1,1 +1,1 @@
-Ansible builtin filters and extra filters installed via pip requirements.txt
+Builtin jinja2 filters plus extra - installed via requirements.txt
