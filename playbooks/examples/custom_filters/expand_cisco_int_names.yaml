@@ -1,19 +1,21 @@
 ---
 description:
   - "This custom filter allows you to expand a short version"
-  - "of Cisco interface name, like Po1, into canonic name that"
-  - "appears in Cisco configuration file, like Port-Channel1"
-  - "It is currently supports Cisco IOS and Cisco NXOS"
+  - "of Cisco interface name, like Po1, into a canonic name which"
+  - "appears in Cisco configuration file, like Port-Channel1."
+  - "It currently supports Cisco IOS and Cisco NXOS"
 
 source_data:
   ios:
     vlan: 'vl103'
     loop: 'lo172'
     eth:  'gi0/0/0.103'
+    po:   'po2.33'
   nxos:
     vlan: 'vl222'
     loop: 'lo253'
     eth:  'et1/46.103'
+    po:   'po2.33'
 
 examples:
   - code:      "source_data.ios.vlan  | expand_cisco_int_names('ios')"
@@ -22,6 +24,8 @@ examples:
     result: "{{ source_data.ios.eth   | expand_cisco_int_names('ios') }}"
   - code:      "source_data.ios.loop  | expand_cisco_int_names('ios')"
     result: "{{ source_data.ios.loop  | expand_cisco_int_names('ios') }}"
+  - code:      "source_data.ios.po    | expand_cisco_int_names('ios')"
+    result: "{{ source_data.ios.po    | expand_cisco_int_names('ios') }}"
 
   - code:      "source_data.nxos.vlan | expand_cisco_int_names('nxos')"
     result: "{{ source_data.nxos.vlan | expand_cisco_int_names('nxos') }}"
@@ -29,3 +33,5 @@ examples:
     result: "{{ source_data.nxos.eth  | expand_cisco_int_names('nxos') }}"
   - code:      "source_data.nxos.loop | expand_cisco_int_names('nxos')"
     result: "{{ source_data.nxos.loop | expand_cisco_int_names('nxos') }}"
+  - code:      "source_data.nxos.po   | expand_cisco_int_names('nxos')"
+    result: "{{ source_data.nxos.po   | expand_cisco_int_names('nxos') }}"
