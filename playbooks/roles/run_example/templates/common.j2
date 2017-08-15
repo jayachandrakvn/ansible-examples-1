@@ -8,15 +8,18 @@ Description:
 Source data:
 ~~~~~~~~~~~~
 {{ source_data | default("not_found") | pprint }}
+{% set tasks_list = run_ansible_tasks | default([]) %}
+{% if tasks_list | length > 0 %}
 
 run_ansible_tasks:
 ~~~~~~~~~~~~~~~~~~
-{{ run_ansible_tasks | default("not_found") | to_nice_yaml}}
-{% for f in run_ansible_tasks | default([]) %}
+{{ tasks_list | to_nice_yaml}}
+{%   for f in tasks_list %}
 
 File: {{ f }}
 {{ lookup('file', playbook_dir + '/roles/run_example/tasks/' + f).split('\n') | to_nice_yaml }}
-{% endfor                                   %}
+{%   endfor %}
+{% endif %}
 
 Test series:
 ~~~~~~~~~~~~~
