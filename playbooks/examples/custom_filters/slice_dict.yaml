@@ -1,0 +1,18 @@
+---
+description:
+  - "useful filter to extract only interesting keys from a dict."
+  - "It is similar to reject_values for arrays (only opposite)"
+  - "and it applied to dicts instead of lists."
+  - "It is structured as original dict, but only contains sub-portion of it..."
+
+source_data:
+  orig_dict: {
+    'care':        { item1: 'foo' },
+    'do_not_care': { item2: 'bar' }
+  }
+
+examples:
+  - code:      "source_data.orig_dict | slice_dict(['care', 'care2'])"
+    result: "{{ source_data.orig_dict | slice_dict(['care', 'care2']) }}"
+  - code:      "source_data.orig_dict | slice_dict(['care', 'care2'], 'not_found')"
+    result: "{{ source_data.orig_dict | slice_dict(['care', 'care2'], 'not_found') }}"
