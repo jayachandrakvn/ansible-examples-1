@@ -1,0 +1,14 @@
+---
+description:
+  - "very useful filter to remove unwanted items from array."
+  - "It simulates the functionality available for free"
+  - "in other programming languages like Ruby or Python."
+
+source_data:
+  arr1: ['a', 'b', 'c', 'garbage', 'foo']
+
+examples:
+  - code:      "source_data.arr1 | reject_values(['garbage', 'foo'])"
+    result: "{{ source_data.arr1 | reject_values(['garbage', 'foo']) }}"
+  - code:      "source_data.arr1 | reject_values(['foo', 'bar'])"
+    result: "{{ source_data.arr1 | reject_values(['foo', 'bar']) }}"

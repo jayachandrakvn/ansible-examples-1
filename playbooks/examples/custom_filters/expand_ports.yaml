@@ -1,0 +1,15 @@
+---
+description:
+  - "This filter basically does string manipulation, but it is useful"
+  - "when you need to generate a list of sequential port names."
+  - "Example below is used for Juniper and Cisco switches."
+
+source_data:
+  junos: 'ge-0/0/'
+  cisco: 'gi0/'
+
+examples:
+  - code:      "source_data.junos | expand_ports('0..3')"
+    result: "{{ source_data.junos | expand_ports('0..3') }}"
+  - code:      "source_data.cisco | expand_ports('1..4')"
+    result: "{{ source_data.cisco | expand_ports('1..4') }}"
