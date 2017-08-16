@@ -1,0 +1,15 @@
+---
+description:
+  - "This filter merges two lists together."
+  - "An interesting side effect happens when lists are not equal size."
+  - "Even more interesting case is when one list is size of one (1)..."
+
+source_data:
+  tunnels: [55, 57]
+  vlans: [201, 203, 222]
+
+examples:
+  - code:      "['Tu']   | zip_lists(source_data.tunnels)"
+    result: "{{ ['Tu']   | zip_lists(source_data.tunnels) }}"
+  - code:      "['Po1.'] | zip_lists(source_data.vlans)"
+    result: "{{ ['Po1.'] | zip_lists(source_data.vlans) }}"

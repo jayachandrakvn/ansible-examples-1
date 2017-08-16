@@ -1,0 +1,23 @@
+---
+description:
+  - "This custom filter merges list and dict together to produce"
+  - "list of new dicts. The logic is quite cumbersome and very custom,"
+  - "but it could be useful to produce a data structure of pre-existing"
+  - "format dynamically from other simpler data structures"
+
+source_data:
+  wish_to_generate_dynamically:
+    ospf:
+      interfaces:
+        - name: 'reth0.70'
+          ospf_cost: 100
+        - name: 'reth0.66'
+          ospf_cost: 100
+        - name: 'reth0.65'
+          ospf_cost: 100
+  instead_we_have_this:
+    vlans: [65, 66, 70]
+
+examples:
+  - code:      "['reth0.'] | zip_lists(source_data.instead_we_have_this.vlans) | zip_list2dict('name', {'ospf_cost': 100})"
+    result: "{{ ['reth0.'] | zip_lists(source_data.instead_we_have_this.vlans) | zip_list2dict('name', {'ospf_cost': 100}) }}"
