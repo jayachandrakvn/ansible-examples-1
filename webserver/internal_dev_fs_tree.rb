@@ -1,5 +1,16 @@
 require 'yaml'
-
+#
+# The purpose of this code is not exactly to "demo" something
+# to the public, but provide the internal mechanism for the
+# developer of those example, so each example can be added
+# as a single file under 'playbooks/examples' folder.
+#
+# The script will scan that folder when webserver is loaded
+# and will make a list of all examples present dynamically
+# (opposed to manually adding each example to static list).
+#
+# But feel free to dissect how it works and reuse pieces as you see fit.
+#
 module FsTree
   class FsTreeRoot
     attr_reader :root_folder, :sections
@@ -73,7 +84,7 @@ module FsTree
       { 'all' => all_sections }.merge(generate_each_section)
     end
 
-    def all_meta
+    def all_hosts_meta
       root_obj.sections.inject({}) do |tmphash, section|
         tmphash.merge!(file_examples[section].hostvars)
         tmphash
