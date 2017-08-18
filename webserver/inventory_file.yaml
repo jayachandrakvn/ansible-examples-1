@@ -18,14 +18,28 @@
 # This is demo only. Please develop your own logic for making dynamic
 # groups for Ansible inventory based on attributes your hosts have.
 #
+# 'demos' attribute is for internal use only - it tells which demos
+# to run for each hosts. We use dynamic inventory for internal
+# purposes to organize the demos workflow.
+#
 host1:
-  os: junos
+  os: h3c
   loc: sf
+  demos: reusable_code # just one demo...
+
 host2:
   os: ios
   loc: sf
+  demos:
+    - reusable_code
+    - reusable_definitions
+
 host3:
   os: junos
   loc: sc
+  demos:
+    - reusable_code
+    - reusable_definitions
+
 host4:
-  my_new_attr: foobar # 'foobar' will appear as a group name in Ansible inventory
+  my_new_attr: foobar  # 'foobar' will appear as a group name in Ansible inventory

@@ -62,7 +62,7 @@ module AnsibleInventory
     # attributes in the future (no need to change the code).
     #
     def attr_values(attr)
-      entire_config.values.map { |v| v[attr] }.compact.sort.uniq
+      entire_config.values.map { |v| v[attr] }.flatten.compact.sort.uniq
     end
 
     #
@@ -71,7 +71,9 @@ module AnsibleInventory
     # specific value (value).
     #
     def hosts_per(property, value)
-      hosts.select { |host| entire_config[host][property] == value }
+      hosts.reject do |host|
+        ([entire_config[host][property]].flatten & [value]).empty?
+      end
     end
 
     #
