@@ -37,6 +37,24 @@ inventory. For that you would need to run command similar to this:
 ```
 webserver/webserver.rb  2> /dev/null &
 ```
+Assuming that the webrick (ruby-based) web server started successfuly, one may verify what Ansible dynamic inventory would look like (by running CLI command like this: curl http://localhost:8880/dynamic_inventory | jq 'keys'). Note that you might need to install packages like 'curl' and 'jq' first. Example below only displays 'keys', or groups' names - in Ansible terms.
+```
+user@host:~/github/ansible-examples $ curl http://localhost:8880/dynamic_inventory | jq 'keys'
+[
+  "_meta",
+  "all",
+  "builtin_filters",
+  "custom_filters",
+  "foobar",
+  "ios",
+  "junos",
+  "reusable_code",
+  "reusable_definitions",
+  "sc",
+  "sf"
+]
+```
+
 ### Disclosure: This is primitive WEB server! If you modify the content of the examples, or add new ones, you will have to restart the WEB server to force it to read new files from the disk...
 
 Now each example group (a folder on a local file system) would be
