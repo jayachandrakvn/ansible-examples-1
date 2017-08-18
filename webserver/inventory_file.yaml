@@ -1,0 +1,31 @@
+---
+#
+# This is the example of the "source of truth" file
+# you may maintain for all network devices (or other hosts too).
+# Its format is very flexible - each host entry may contain any
+# number of attributes.
+# But to make use of that flexibility one needs to parse that
+# source of truth file and create reasonable 'groups' that will
+# contain the list of hostnames that belong to such a group.
+# The easiest implementation is available as part of this demo:
+# it simply scans through all attributes ever mentioned under any host,
+# and it makes a list of all unique values of those attributes.
+# Then that list of unique values of all attributes becomes the list
+# of groups for Ansible dynamic inventory.
+# Note. That is oversimplified approach, but it might work for one
+# who does not have large inventory, nor large number of attributes,
+# nor overlapping values for different attributes.
+# This is demo only. Please develop your own logic for making dynamic
+# groups for Ansible inventory based on attributes your hosts have.
+#
+host1:
+  os: junos
+  loc: sf
+host2:
+  os: ios
+  loc: sf
+host3:
+  os: junos
+  loc: sc
+host4:
+  my_new_attr: foobar # 'foobar' will appear as a group name in Ansible inventory
