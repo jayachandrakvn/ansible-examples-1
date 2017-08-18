@@ -14,7 +14,7 @@ If you wish to have hands-on experience with all examples and code fragments ava
 
 Then you should be able to run ansible-playbook command like this:
 ```
-user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml
+(venv) user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml
 ```
 which will give you a list of examples that you may execute and see what they produce (and examine their code, if interested).
 ```
@@ -35,11 +35,11 @@ The next step (after you see a list of examples' groups available from previous 
 would be to start a local web server that will support Ansible dynamic
 inventory. For that you would need to run command similar to this:
 ```
-user@host:~/github/ansible-examples $ webserver/webserver.rb  2> /dev/null &
+(venv) user@host:~/github/ansible-examples $ webserver/webserver.rb  2> /dev/null &
 ```
 Assuming that the webrick (ruby-based) web server started successfuly, one may verify what Ansible dynamic inventory would look like (by running CLI command like this: curl http://localhost:8880/dynamic_inventory | jq 'keys'). Note that you might need to install packages like 'curl' and 'jq' first. Example below only displays 'keys', or groups' names - in Ansible terms.
 ```
-user@host:~/github/ansible-examples $ curl http://localhost:8880/dynamic_inventory | jq 'keys'
+(venv) user@host:~/github/ansible-examples $ curl http://localhost:8880/dynamic_inventory | jq 'keys'
 [
   "_meta",
   "all",
@@ -60,5 +60,5 @@ user@host:~/github/ansible-examples $ curl http://localhost:8880/dynamic_invento
 Now each example group (a folder on a local file system) would be
 addressable via "-l" argument of ansible-playbook command:
 ```
-user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml -l builtin_filters
+(venv) user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml -l builtin_filters
 ```
