@@ -2,7 +2,7 @@
 #- debug: var=category
 
 - name: "Collect short description for each category"
-  shell: "cat {{playbook_dir}}/examples/{{item}}/description.txt"
+  shell: "cat {{playbook_dir}}/examples/{{item}}/group_description.txt"
   ignore_errors: yes
   with_items: "{{category | default([]) }}"
   register: descr

@@ -9,7 +9,7 @@ source_data:
   vlans: [201, 203, 222]
 
 examples:
-  - code:      "['Tu']   | zip_lists(source_data.tunnels)"
-    result: "{{ ['Tu']   | zip_lists(source_data.tunnels) }}"
+  - code:      "['show int Tu']   | zip_lists(source_data.tunnels)"
+    result: "{{ ['show int Tu']   | zip_lists(source_data.tunnels) }}"
   - code:      "['Po1.'] | zip_lists(source_data.vlans)"
     result: "{{ ['Po1.'] | zip_lists(source_data.vlans) }}"

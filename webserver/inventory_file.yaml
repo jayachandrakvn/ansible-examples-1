@@ -25,21 +25,18 @@
 host1:
   os: h3c
   loc: sf
-  demos: reusable_code # just one demo...
+  demo: reusable_code
 
 host2:
   os: ios
   loc: sf
-  demos:
-    - reusable_code
-    - reusable_definitions
+  demo: reusable_code
 
 host3:
   os: junos
   loc: sc
-  demos:
-    - reusable_code
-    - reusable_definitions
+  demo: reusable_code
 
 host4:
   my_new_attr: foobar  # 'foobar' will appear as a group name in Ansible inventory
+  demo: reusable_definitions

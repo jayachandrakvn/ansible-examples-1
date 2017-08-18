@@ -1,20 +1,22 @@
 ---
 - set_fact:
     tmp_config: "/tmp/hostname_{{inventory_hostname}}.txt"
-    HOSTNAME: "{{inventory_hostname}}-EXAMPLE"
+    HOSTNAME: "{{inventory_hostname}}-{{HOSTNAME_SUFFIX}}"
+    template_name: "hostname/hostname_{{ dev_os }}.j2"
 
 #
 # Define source_data because it will be displayed by "run_example" play
 #
 - set_fact:
     source_data:
-      HOSTNAME: "{{HOSTNAME}}"
-      dev_os: "{{dev_os}}"
+      HOSTNAME: "{{ HOSTNAME }}"
+      dev_os: "{{ dev_os }}"
+      template_name: "{{ template_name }}"
 
-- name: "Set hostname as '{{HOSTNAME}}'"
+- name: "Set hostname as '{{ HOSTNAME }}'"
   template: >
-    src="hostname/hostname_{{ dev_os }}.j2"
-    dest="{{tmp_config}}"
+    src="{{ template_name }}"
+    dest="{{ tmp_config }}"
 
 #
 # Define examples because it will be displayed by "run_example" play

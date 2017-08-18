@@ -14,7 +14,7 @@ Source data:
 run_ansible_tasks:
 ~~~~~~~~~~~~~~~~~~
 {{ tasks_list | to_nice_yaml}}
-{%   for f in tasks_list %}
+{%   for f in tasks_list if not (hide_ansible_tasks|default(False)) %}
 
 File: {{ f }}
 {{ lookup('file', playbook_dir + '/roles/run_example/tasks/' + f).split('\n') | to_nice_yaml }}
