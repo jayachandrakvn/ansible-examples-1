@@ -1,0 +1,7 @@
+---
+description: 'reset hostname using shared template'
+
+hide_ansible_tasks: True
+
+run_ansible_tasks:
+  - 'set_hostname.yaml'

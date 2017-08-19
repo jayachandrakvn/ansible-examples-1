@@ -38,7 +38,7 @@ all_ansible_hosts = all_fs_example.merge(
 #    to extend host vars and group vars
 all_ansible_hosts.merge!({
   '_meta' => {
-    'hostvars ' => helper1.all_hosts_meta,  # dynamically inject your per-host variables
+    'hostvars'  => helper1.all_hosts_meta,  # dynamically inject your per-host variables
     'groupvars' => helper2.all_groups_meta  # dynamically inject your per-group variables
   }
 })

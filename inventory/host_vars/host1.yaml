@@ -1,5 +1,2 @@
 ---
-description: 'reset hostname using shared template'
-
-run_ansible_tasks:
-  - 'set_hostname.yaml'
+HOSTNAME_SUFFIX: H1
