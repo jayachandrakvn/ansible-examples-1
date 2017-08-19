@@ -1,2 +1,7 @@
 ---
 description: 'customize global definitions per host'
+
+hide_ansible_tasks: True
+
+run_ansible_tasks:
+  - 'generate_vlans.yaml'

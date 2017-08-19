@@ -1,0 +1,22 @@
+---
+SFLAB_vlans:
+  '64':
+    name: 'general'
+    description: "General vlan"
+    subnet: '10.20.80.152'
+    cidr: '29'
+    pan: '10.0.80.153' #  PAN as def.gw
+
+  '67':
+    name: 'cameras'
+    description: "Security cameras"
+    subnet: '10.20.80.176'
+    cidr: '29'
+    pan: '10.20.80.177' # PAN as def.gw
+
+  '68':
+    name: 'production'
+    description: "Prod vlan"
+    subnet: '10.20.80.144'
+    cidr: '29'
+    pan: '10.0.80.145' # PAN as def.gw

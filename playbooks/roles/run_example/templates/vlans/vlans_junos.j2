@@ -1,0 +1,20 @@
+{# 'vlans' is a group var (per location)                #}
+{# 'host.local_vlans' is a host var (if defined)        #}
+{# ---------------------------------------------------- #}
+{% set my_vlans = host | get_in(['local_vlans'], vlans) %}
+{# ---------------------------------------------------- #}
+{% if my_vlans|length > 0                               %}
+vlans {
+{%   for vlan_id, vlan in my_vlans.items() if vlan      %}
+    {{ vlan.name }} {
+{%     set desc = vlan.description                      %}
+{%     if ('subnet' in vlan) and vlan.subnet            %}
+{%       set desc = desc + "; subnet: " +
+           vlan.subnet + '/' + vlans[vlan_id].cidr      %}
+{%     endif                                            %}
+        description "{{ desc }}";
+        vlan-id {{ vlan_id }};
+    }
+{%   endfor                                             %}
+}
+{% endif                                                %}
