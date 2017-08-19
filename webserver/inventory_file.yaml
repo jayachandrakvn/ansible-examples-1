@@ -38,5 +38,7 @@ host3:
   demo: reusable_code
 
 host4:
+  os: junos
+  loc: sf
   my_new_attr: foobar  # 'foobar' will appear as a group name in Ansible inventory
   demo: reusable_definitions

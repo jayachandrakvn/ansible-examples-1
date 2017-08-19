@@ -1,0 +1,33 @@
+---
+- set_fact:
+    tmp_config: "/tmp/hostname_{{inventory_hostname}}.txt"
+    template_name: "vlans/vlans_{{ dev_os }}.j2"
+
+#
+# Define source_data because it will be displayed by "run_example" play
+#
+- set_fact:
+    source_data:
+      group_vlans: "{{ vlans }}"
+      host_variables: "{{ host }}"
+      dev_os: "{{ dev_os }}"
+      template_name: "{{ template_name }}"
+
+- name: "Generate VLANs"
+  template: >
+    src="{{ template_name }}"
+    dest="{{ tmp_config }}"
+
+#
+# Define examples because it will be displayed by "run_example" play
+#
+- set_fact:
+    examples: {
+      'code': [
+         "HOST vars  : local_vlans = vlans | slice_dict(vlans.keys() | reject_values(['68']))",
+         "GROUP vars : SFLAB_vlans is regular hash - per location",
+         "GLOBAL vars: shared_vlans is regular hash available for any host",
+         "GLOBAL vars: vlans = SFLAB_vlans | combine(shared_vlans | slice_dict(['999']))"
+      ],
+      'result': "{{ lookup('file', tmp_config).split('\n') }}"
+    }
