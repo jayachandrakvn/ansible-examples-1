@@ -10,7 +10,3 @@ shared_vlans:
     name: bogus
     description: "Bogus vlan - replace Cisco Native VLAN"
     comment: "no IP subnet; only for stripping Cisco Native Vlan"
-
-vlans: "{{ SFLAB_vlans | combine(
-    shared_vlans | slice_dict(['999'])
-  ) }}"

@@ -20,3 +20,7 @@ SFLAB_vlans:
     subnet: '10.20.80.144'
     cidr: '29'
     pan: '10.0.80.145' # PAN as def.gw
+
+vlans: "{{ SFLAB_vlans | combine(
+    shared_vlans | slice_dict(['999'])
+  ) }}"
