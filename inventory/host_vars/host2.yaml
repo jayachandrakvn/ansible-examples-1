@@ -1,2 +1,10 @@
 ---
 HOSTNAME_SUFFIX: H2
+
+description: 'Generate standard and extended Cisco ACLs'
+
+run_ansible_tasks: # re-define group var with more specific value
+  - 'generate_acls.yaml'
+
+host:
+  acls: "{{ common_ACLs }}"

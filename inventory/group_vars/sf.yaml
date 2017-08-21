@@ -24,3 +24,25 @@ SFLAB_vlans:
 vlans: "{{ SFLAB_vlans | combine(
     shared_vlans | slice_dict(['999'])
   ) }}"
+
+_partial_SF_WAN_in:
+  - name:   'SFHQ WAN IP - Level3'
+    dst_ip: '4.15.75.118/32'
+  - name:   'SFHQ legacy WAN subnet from IPNetworks/L3'
+    dst_ip: '204.16.158.64/26'
+  - name:   'ARIN/BGP SFHQ subnet'
+    dst_ip: '199.16.144.0/24'
+
+common_ACLs:
+  '55':
+    - name: 'www.google.com'  # no need for ip and mask attributes
+    - name: 'www.opentable.com'
+  'acl_SF_WAN_BGP':
+    - name: 'SFHQ WAN subnet: ARIN .144'
+      ip: '199.16.144.0'
+      mask: '255.255.255.0'
+  'acl_OT_PCLN': # extended ACL
+    - name: 'From OT to PCLN with NAT'
+      src_ip: '10.0.0.0/8'
+      dst_ip: '10.47.5.0/24'
+  'SF_WAN_in':   "{{ _partial_WAN_deny + _partial_SF_WAN_in + _partial_deny_all }}"
