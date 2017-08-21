@@ -1,4 +1,11 @@
 ---
+#
+# This is only needed as support step to show how custom
+# python filter 'print_list_results' can be used.
+# Instead of generating fake dict by hand we simply capturing
+# a result of real command as variable 'source_data'
+# and then applying a custom filter to that variable.
+#
 - set_fact:
     examples: {
       'code': "source_data.results | print_list_results('inner_item')",

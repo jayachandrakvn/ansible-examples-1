@@ -1,5 +1,18 @@
 #!/usr/bin/env ruby
 
+#
+# This script shows how to bind Ansible and WEB rest api
+# to produce dynamic inventory for Ansible.
+# The web server supposed to return data in JSON format.
+#
+# WEB server developed in such a way that it generates list of
+# host groups based on values of the attributes associated
+# with each host in a host definition file at
+# '~/ansible-examples/webserver/inventory_file.yaml'
+#
+# See '~/ansible-examples/webserver/webserver.rb' for more
+# details about rest api implementation.
+#
 require 'open-uri'
 
 INVENTORY_HOST = 'localhost' # CNAME to real server

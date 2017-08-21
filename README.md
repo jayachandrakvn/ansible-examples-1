@@ -29,8 +29,12 @@ ok: [help] => {
 }
 ```
 The trick here is - we use static inventory file that has a single host entry called 'help'. The output you see is simply what is designed to show when "{{ inventory_hostname == 'help'}}". But if you enable dynamic inventory (see next step - how to start a local web server), then you will have more targets to play with in your inventory.
+In fact, you may want to see all static examples (related to python filters) by simply executing this command:
+```
+(venv) user@host:~/github/ansible-examples $ inventory/local_file_based_examples.rb --list | jq '.'
+```
 
-## Start local webserver to support dynamic inventory
+## Start local webserver for dynamic inventory from YAML file
 The next step (after you see a list of examples' groups available from previous command)
 would be to start a local web server that will support Ansible dynamic
 inventory. For that you would need to run command similar to this:
@@ -43,9 +47,8 @@ Assuming that the webrick (ruby-based) web server started successfuly, one may v
 [
   "_meta",
   "all",
-  "builtin_filters",
-  "custom_filters",
   "foobar",
+  "h3c",
   "ios",
   "junos",
   "reusable_code",
@@ -55,10 +58,9 @@ Assuming that the webrick (ruby-based) web server started successfuly, one may v
 ]
 ```
 
-### Disclosure: This is primitive WEB server! If you modify the content of the examples, or add new ones, you will have to restart the WEB server to force it to read new files from the disk...
+### Disclosure: This is primitive WEB server! If you modify the content of the source of truth YAML, you will have to restart the WEB server to force it to read new files from the disk...
 
-Now each example group (a folder on a local file system) would be
-addressable via "-l" argument of ansible-playbook command:
+Now each host-related example group (per-OS, like 'ios' or 'junos', or per-location like 'sf' or 'sc') would be addressable via "-l" argument of ansible-playbook command:
 ```
-(venv) user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml -l builtin_filters
+(venv) user@host:~/github/ansible-examples $ ansible-playbook playbooks/example.yaml -l reusable_definitions
 ```

@@ -3,7 +3,3 @@
   version: master
   name: napalm
   path: roles
-#- src: https://github.com/PaloAltoNetworks/ansible-pan/
-#  version: master
-#  name: ansible-pan
-#  path: roles

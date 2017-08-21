@@ -1,15 +1,15 @@
 require 'yaml'
 #
-# The purpose of this code is not exactly to "demo" something
+# The purpose of this code is not exactly to "demo" anything
 # to the public, but provide the internal mechanism for the
 # developer of those example, so each example can be added
 # as a single file under 'playbooks/examples' folder.
 #
-# The script will scan that folder when webserver is loaded
-# and will make a list of all examples present dynamically
-# (opposed to manually adding each example to static list).
+# The script will scan that folder and will make a list of all
+# examples present dynamically (opposed to manually adding each
+# example to some sort of static list).
 #
-# But feel free to dissect how it works and reuse pieces as you see fit.
+# But feel free to see how it works and reuse its pieces.
 #
 module FsTree
   class FsTreeRoot
