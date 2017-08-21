@@ -1,0 +1,35 @@
+---
+#
+# This play called from host_var file 'host4.yaml'
+# and will generate Cisco IOS access lists defined
+# for SF region (location) stored in variable 'common_ACLs'
+# inside group_var file 'sf.yaml'
+#
+- set_fact:
+    tmp_config: "/tmp/hostname_{{inventory_hostname}}.txt"
+    template_name: "acl/acl_{{ dev_os }}.j2"
+
+#
+# Define source_data because it will be displayed by "run_example" play
+#
+- set_fact:
+    source_data:
+      common_ACLs: "{{ common_ACLs }}"
+      dev_os: "{{ dev_os }}"
+      template_name: "{{ template_name }}"
+
+- name: "Generate Cisco IOS ACLs"
+  template: >
+    src="{{ template_name }}"
+    dest="{{ tmp_config }}"
+
+#
+# Define examples because it will be displayed by "run_example" play
+#
+- set_fact:
+    examples: {
+      'code': [
+         "HOST vars  : host.acls = common_ACLs",
+      ],
+      'result': "{{ lookup('file', tmp_config).split('\n') }}"
+    }

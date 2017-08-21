@@ -1,6 +1,11 @@
 ---
 HOSTNAME_SUFFIX: EXAMPLE
 
+global:
+  name_servers:
+    - 8.8.8.8
+    - 8.8.4.4
+
 shared_vlans:
   '99999':
     name: fake_vlan
@@ -10,3 +15,32 @@ shared_vlans:
     name: bogus
     description: "Bogus vlan - replace Cisco Native VLAN"
     comment: "no IP subnet; only for stripping Cisco Native Vlan"
+
+#
+# Partial ACLs definitions to be used in different locations
+#
+_partial_deny_all:
+  - name: 'deny everything'
+    action: deny
+
+_partial_deny_all_log:
+  - name: 'deny everything with log'
+    action: deny
+    log: 'log-input'
+
+_partial_WAN_deny:
+  - name: 'deny loopback subnet'
+    action: deny
+    src_ip: '127.0.0.0/8'
+  - name: 'deny private subnet 10.x.x.x'
+    action: deny
+    src_ip: '10.0.0.0/8'
+  - name: 'deny private subnet 172.16.x.x'
+    action: deny
+    src_ip: '172.16.0.0/12'
+  - name: 'deny private subnet 192.168.x.x'
+    action: deny
+    src_ip: '192.168.0.0/16'
+  - name: 'deny link-local subnet 169.254.x.x'
+    action: deny
+    src_ip: '169.254.0.0/16'

@@ -1,0 +1,44 @@
+{# =================================================== #}
+{%- macro ios_ext_acl(acl_name, ace_list)             -%}
+{# =================================================== #}
+{% set cmd = 'ip access-list extended ' + acl_name     %}
+{# --------------------------------------------------- #}
+
+no {{ cmd }}
+
+{{ cmd }}
+{% for elem in ace_list                                %}
+ remark entry_{{ loop.index }} --> {{ elem.name }}
+{# --------------------------------------------------- #}
+{%   if elem.src_ip is defined                         %}
+{%     set src_mask = elem.src_ip | ipaddr('hostmask') %}
+{%     set src_addr = elem.src_ip.split('/')[0]        %}
+{%     set src = src_addr + " " + src_mask             %}
+{%   else                                              %}
+{%     set src = "any"                                 %}
+{%   endif                                             %}
+{# --------------------------------------------------- #}
+{%   if elem.dst_ip is defined                         %}
+{%     set dst_mask = elem.dst_ip | ipaddr('hostmask') %}
+{%     set dst_addr = elem.dst_ip.split('/')[0]        %}
+{%     set dst = dst_addr + " " + dst_mask             %}
+{%   else                                              %}
+{%     set dst = "any"                                 %}
+{%   endif                                             %}
+{# --------------------------------------------------- #}
+{%   set action = elem.action | default('permit')      %}
+{%   set proto  = elem.proto  | default('ip')          %}
+{%   set src_p  = elem.src_p  | default('')            %}
+{%   set dst_p  = elem.dst_p  | default('')            %}
+{%   set log    = elem.log    | default('')            %}
+{# --------------------------------------------------- #}
+ {{ [ action,
+     proto,
+     src,
+     src_p,
+     dst,
+     dst_p,
+     log
+    ] | join(' ') }}
+{% endfor                                              %}
+{%- endmacro                                          -%}

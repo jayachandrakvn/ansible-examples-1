@@ -1,0 +1,41 @@
+{# ====================================== #}
+{%- macro ios_std_acl(acl, hosts_list)   -%}
+{# ====================================== #}
+{#
+   check first char in a string that is
+   ACL's name or number                   #}
+{# -------------------------------------- #}
+{% if (acl|string)[0] in "0123456789"     %}
+{%   set cmd = 'access-list ' + acl       %}
+{%   set pref = cmd                       %}
+{% else                                   %}
+{%   set cmd = 'ip access-list standard ' + acl %}
+{%   set pref = ''                        %}
+{% endif                                  %}
+{# -------------------------------------- #}
+
+no {{ cmd }}
+
+{% if pref == ''                          %}
+{{ cmd }}
+{% endif                                  %}
+{# -------------------------------------- #}
+{% for elem in hosts_list                 %}
+{{ pref }} remark entry_{{ loop.index }} --> {{ elem.name }}
+{%   set ip_candidate = elem
+       | get_ip_addr(global.name_servers) %}
+{%   if ip_candidate | ipv4               %}
+{%     if elem.mask is defined            %}
+{%       set wild_mask = (ip_candidate
+           + "/"
+           + elem.mask
+         ) | ipaddr('hostmask')           %}
+{%     else                               %}
+{%       set wild_mask = "0.0.0.0"        %}
+{%     endif                              %}
+{{ pref }} permit {{ ip_candidate + " " + wild_mask }}
+{%   else                                 %}
+{{ pref }} remark NETOPS_BUILD_ERROR: failed to resolve '{{ elem.name }}'
+{%   endif                                %}
+{% endfor                                 %}
+{%- endmacro                             -%}

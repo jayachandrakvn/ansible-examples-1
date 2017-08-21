@@ -1,0 +1,20 @@
+{# ----------------------------------------- #}
+{% from "templates/_ios_std_acl.j2"
+     import ios_std_acl with context         %}
+{# ----------------------------------------- #}
+{% from "templates/_ios_ext_acl.j2"
+     import ios_ext_acl with context         %}
+{# ----------------------------------------- #}
+{% for acl in (host | get_in(['acls'], {})
+              ).keys() | sort                %}
+{# ----------------------------------------- #}
+{# check first entry for legacy attributes   #}
+{# like 'ip', which points to STD acl        #}
+{# ----------------------------------------- #}
+{%   if (acl|string)[0] in "0123456789"
+   or ('ip' in host.acls[acl][0])            %}
+{{     ios_std_acl(acl, host.acls[acl]) }}
+{%   else                                    %}
+{{     ios_ext_acl(acl, host.acls[acl]) }}
+{%   endif                                   %}
+{% endfor                                    %}
