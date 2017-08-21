@@ -2,7 +2,7 @@ require 'yaml'
 #
 # The purpose of this code is not exactly to "demo" anything
 # to the public, but provide the internal mechanism for the
-# developer of those example, so each example can be added
+# developers of those examples, so each example can be added
 # as a single file under 'playbooks/examples' folder.
 #
 # The script will scan that folder and will make a list of all
