@@ -5,7 +5,7 @@ Please check out our SF Ansiblefest 2017 "Case Study" presentation suitable for 
 Another "deep dive" version (more technical) is available [here](Ansiblefest2017/OT_deep_dive.pdf)
 
 ## What is the prurpose of this repo
-The first thing is - it is not a tutorial for Ansible or Jinja2. It will not teach you from ground zero.
+The first thing is - it __is not__ a tutorial for Ansible or Jinja2. It will not teach you from ground zero.
 The idea behind this repo is - to keep a collection of semi-advanced coding examples for s/w engineers who are coming from different languages, but have limited experience with Ansible or jinja2 at the moment.
 The hacky coding examples supposed to provoke extra "thinking" (like: "what does it do?" or "why does it even work?") and will help to realize the different ways to "do stuff" in Ansible. It provides you some kind of "hacking framework" where you modify the existing code, or add your own examples to see if they work the way you expect. 
 
@@ -86,3 +86,7 @@ or
 
 and so on...
 ```
+### Just a side note.
+The 'example.yaml' playbook and its roles & plays under 'ansible-demo/playbooks' are nothing like the real ones that OpenTable uses for its private Ansible repo. They are oversimplified to do just one thing - run a small piece of code as standalone demo...
+Exposing real playbooks is hard because they tightly integrated with the overall data structure and file structure of the entire project, and we have not put too much effort (yet) to make it more generic.
+We copied some fragments of our code under '~/ansible-examples/as-is-no-warranty', but those will not work - they are "display only". It still might give you an idea or two, or maybe you would realized they are sub-optimal in one way or the other (that is absolutely plausible, we know that).
