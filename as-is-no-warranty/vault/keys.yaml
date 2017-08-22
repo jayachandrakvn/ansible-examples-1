@@ -1,0 +1,46 @@
+---
+#
+# VRRP keys defined and looked up by VIP (single IP)
+#
+vrrp_keys:
+  '66.151.150.137':
+    key_ios: 'aaaa'
+    key: '7bbbb'
+  '199.16.145.1':
+    key: 'ddddd'
+
+#
+# BGP keys names contain side_a and side_z routers hostnames separated by '/'
+# clear text version of the secret is used only if encrypted version for the same
+# secret is not found per dev_os (ios, in this case).
+# Using encrypted versions of shared secrets make the final IOS config 
+# more stable between Ansible runs. If kept unencrypted version, Cisco router
+# would re-encrypt it differently every time you generate config with Ansible,
+# so there diff will not be empty from original IOS config...
+#
+bgp_keys:
+  'border1.sje004/sc-gw-2':
+    key: 'aaaaa'
+    key_ios: '0bbbbb'
+  'border2.sje004/sc-gw-1':
+    key: 'aaaaa'
+    key_ios: '0bbbb'
+  'Level3.bar2.sfo1/sc-gw-1':
+    key: 'zzzzz'
+    key_ios: '0yyyyy'
+
+#
+# OSPF secrets are defined per subnet (or segment).
+# Router's or switch's interfaces are matched against those subnets
+# and shared secret is extracted if matched.
+# Same idea - to use encrypted versions when available (for IOS and JunOS)
+#
+ospf_segments:
+  '10.254.254.84/30': # TEMP: mocking Tunnel84
+    key_id: '1'
+    key: 'mock_tu_84'
+  '172.26.20.32/28': # SFHQ L3 WAN interconnect QFX to GW routers
+    key_id: '1'
+    key: 'aaaa'
+    key_junos: '$9$bbbbb'
+    key_ios: '0ccccc'
