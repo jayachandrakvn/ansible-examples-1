@@ -1,0 +1,27 @@
+---
+- name: remove empty fragment files first
+  shell: "find {{ build_dir }}/frags -empty -type f -delete"
+
+- name: "Assemble entire config file for host {{ inventory_hostname }}"
+  assemble: >
+    src="{{ build_dir }}/frags"
+    dest="{{ config_file }}"
+  when: custom_frag_src is not defined
+
+- name: "Copy custom fragment into final config file"
+  shell: "cp {{ build_dir }}/custom_{{ custom_frag_dst }}.conf {{ config_file }}"
+  when: custom_frag_src is defined
+
+- name: "Print out '{{ config_file }}'"
+  debug: msg="{{ lookup('file', config_file).split('\n') }}"
+  when: verbose_flag
+
+- name: "Check assembled file for errors"
+  shell: "grep 'NETOPS_BUILD_ERROR' {{config_file}}; echo 'grep results captured' 1>&2"
+  register: build_errors
+
+- debug: var=build_errors.stdout_lines
+  when: (build_errors.stdout_lines | length) > 0
+
+- pause: prompt="\nBUILD ERRORS were found, see above. Continue (ENTER) or abort (^C)?"
+  when: (build_errors.stdout_lines | length) > 0
