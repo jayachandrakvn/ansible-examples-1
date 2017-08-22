@@ -22,7 +22,6 @@ If you wish to have hands-on experience with all examples and code fragments ava
 - virtualenv --no-site-packages venv
 - source venv/bin/activate
 - pip install -r requirements.txt
-- ansible-galaxy install -r requirements.yaml
 
 Then you should be able to run ansible-playbook command like this:
 ```
