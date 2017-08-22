@@ -1,0 +1,168 @@
+#!/usr/local/bin/expect --
+
+match_max 10000
+set max_screens 1000
+set timeout 15
+set CR "\r"
+
+set fixed_delay 0.2
+set auth_retry 10
+
+if { $argc < 6 } {
+  send_user "\nUsage: $argv0 CONSERVER DEVOS ROUTER user pass 'CMD_1' \['CMD_N' ...\]\n"
+  send_user "The program will a number of commands on router\n"
+  send_user "DEVOS supported: ios|junos\n\n"
+  exit 1
+}
+
+set init_i 5
+
+set CONSOLE [lrange $argv 0 0]
+set DEVOS   [lrange $argv 1 1]
+set HOST    [lrange $argv 2 2]
+set USER    [lrange $argv 3 3]
+set PASS    [lrange $argv 4 4]
+
+set exit_cmd "exit"
+
+if { $DEVOS == "junos" } {
+  set ini_prompt "(.*)%"
+  set cli_prompt "(.*)(#|>|%)"
+  set to_cli "cli"
+} elseif { $DEVOS == "ios" || $DEVOS == "nxos" } {
+  set ini_prompt "(.*)>"
+  set cli_prompt "(.*)(#|>)"
+  set to_cli "enable"
+} else {
+  send_user "\n\n*** FAILURE - unknown OS: $DEVOS\n\n"
+  exit 1
+}
+
+send_user "ini prompt = '$ini_prompt'\n"
+send_user "cli prompt = '$cli_prompt'\n"
+
+spawn console -a -M $CONSOLE -p 782 $HOST
+
+send $CR; expect {}; sleep 2;
+
+# 1. Pass authentication
+
+set cli_OK "nope..."
+set ini_to_cli "nope..."
+
+send $CR
+
+for {set i 0} {$i < $auth_retry} {incr i} {
+  sleep 1
+  expect {
+    -re "--More--"    { send "q"; sleep 1; }
+    -re "-- More --"  { send "q"; sleep 1; }
+    -re "---(.*)more(.*)---"    { send "q"; sleep 1; }
+    -re "name:|ogin:" {
+      send_user "\n===> got username prompt..."
+      send "$USER$CR"
+    }
+    -re "Would you like to enter the initial configuration dialog.*yes.no.:" { send "no$CR" }
+    -re "Login incorrect" {
+      send $CR
+    }
+    -re "word:" {
+      send_user "\n===> got password prompt..."
+      send "$PASS$CR"
+    }
+    -re $ini_prompt {
+      send_user "\n===> we made to initial prompt!!!"
+      send "${to_cli}$CR"
+      set ini_to_cli "ok"
+    }
+    -re $cli_prompt {
+      send_user "\n===> we made to CLI prompt!!!"
+      set cli_OK "ok"
+      if { $DEVOS == "junos" } {
+        if { $ini_to_cli == "ok"} {
+          for {set j 0} {$j < 7} {incr j} {
+            send $CR; expect {}
+          }
+        }
+      }
+      break
+    }
+    timeout { send_user "\n\n Connection timeout to $HOST\n\n" ; exit 1 }
+  }
+}
+
+if { $cli_OK != "ok" } {
+  send_user "\n===> PROBLEM: could not get to cli_prompt: '$cli_prompt', exiting\n"
+  exit 1
+}
+
+# 2. Execute the commands one by one
+
+set i 0
+set pattern_EOL    "^(.*) <<EOL>>$"
+set pattern_SLEEP  "^<<SLEEP=(.*)>>$"
+
+foreach cmd_raw $argv {
+  if { $i < $init_i } { incr i; continue; }
+
+  set result [regexp $pattern_EOL $cmd_raw match cmd ]
+  if { $result != 1 } {
+    set cmd $cmd_raw
+  }
+
+  set add_sleep [regexp $pattern_SLEEP $cmd_raw match extra_sleep ]
+  if { $add_sleep == 1 } {
+    send_user "\n+++ extra sleep: '$extra_sleep' +++\n"
+    sleep $extra_sleep
+    continue
+  }
+
+  if { $cmd == "<<CTRL_D>>" } {
+    exp_send -- "\004"
+  } else {
+    exp_send -- "$cmd$CR"
+  }
+
+  if { $result == 1 } {
+    send_user "\n+++ no-wait command '$cmd' +++\n"
+    expect {}
+  } else {
+    send_user "\n+++ COMMAND: $cmd +++\n"
+    set n 0
+    while { $n < $max_screens } {
+      sleep $fixed_delay
+      expect {
+        -re "--More--"      { send " "; sleep 1; }
+        -re "-- More --"    { send " "; sleep 1; }
+        -re "---(.*)more(.*)---"    { send " "; sleep 1; }
+        -re "Create directory filename .(.+).?" { send $CR }
+        -re "Do you really want to remove these keys. .yes.no."  { send "yes$CR" }
+        -re $cli_prompt     { send_user "\n"; break; }
+        timeout             { send_user "\n+++TIMEOUT+++\n"; break; }
+      }
+      incr n
+    }
+    incr i
+  }
+}
+
+set timeout 3
+
+send $CR; expect -re $cli_prompt {}
+
+send_user "\n\n===> we are done!!!\n\n"
+
+for {set i 0} {$i < 3} {incr i} {
+  send_user "\n --> (iteration=$i): Sending '$exit_cmd' command...\n"
+  send "${exit_cmd}$CR"
+  expect {
+    -re ".*\n(.*)$" { set curr_prompt $expect_out(1,string) }
+    timeout { send_user "\n\nTimeout reached=$timeout\n\n" ; break }
+  }
+  send_user "\n --> (iteration=$i): Current prompt: '$curr_prompt'\n"
+  sleep $fixed_delay
+}
+
+send_user "\n\n===> we are out now\n\n"
+
+exit 0

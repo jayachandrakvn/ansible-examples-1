@@ -1,0 +1,62 @@
+---
+- set_fact:
+    ssh_file_base: "{{ host | get_in(['sshkey_filebase'], '') }}"
+
+- set_fact:
+    ssh_pub_file:  "{{ ssh_file_base + '.pub.pem' }}"
+    ssh_priv_file: "{{ ssh_file_base + '.priv.pem' }}"
+
+- set_fact:
+    openssl_priv: "openssl genrsa -des3 -passout pass:{{user_pass}} -out {{ ssh_priv_file }} 2048"
+    openssl_pub:  "openssl rsa -passin pass:{{user_pass}} -in {{ ssh_priv_file }} -outform PEM -pubout -out {{ ssh_pub_file }}"
+
+- name: 'Check SSH Public key...'
+  stat:
+    path: "{{ ssh_pub_file }}"
+  register: pub_file_stat
+  when: "ssh_file_base != ''"
+
+- debug: var=pub_file_stat
+  when: debug_flag
+
+- name: 'Check SSH Private key...'
+  stat:
+    path: "{{ ssh_priv_file }}"
+  register: priv_file_stat
+  when: "ssh_file_base != ''"
+
+- debug: var=priv_file_stat
+  when: debug_flag
+
+- set_fact:
+    pub_OK_condition: "{{
+          (pub_file_stat  | get_in(['stat', 'exists'], 'False'|bool))
+      and (pub_file_stat  | get_in(['stat', 'size'], 0) > 100)
+    }}"
+    priv_OK_condition: "{{
+          (priv_file_stat  | get_in(['stat', 'exists'], 'False'|bool))
+      and (priv_file_stat  | get_in(['stat', 'size'], 0) > 100)
+    }}"
+
+- name: 'Generate new private SSH key'
+  shell: "{{ openssl_priv }}"
+  when:
+    - "ssh_file_base != ''"
+    - not (pub_OK_condition and priv_OK_condition)
+  register: priv_key_generated
+
+- debug: var=priv_key_generated
+  when: debug_flag
+
+- name: 'Generate new Public SSH key from its private key'
+  shell: "{{ openssl_pub }}"
+  when:
+    - "ssh_file_base != ''"
+    - not (pub_OK_condition and priv_OK_condition)
+  register: pub_key_generated
+
+- debug: var=pub_key_generated
+  when: debug_flag
+
+# Make SSH2 to OpenSSH public key conversion when needed
+# - { include: ssh2_to_openssh.yaml, when: "(junos_flavor | default('NOTDEFINED')) in ['qfx']" }

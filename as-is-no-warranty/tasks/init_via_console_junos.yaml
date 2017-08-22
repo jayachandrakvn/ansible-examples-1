@@ -1,0 +1,88 @@
+---
+- shell: "openssl rsa -in {{ ssh_priv_file }} -passin pass:{{user_pass}} -outform PEM 2> /dev/null"
+  when: "ssh_file_base|default('') != ''"
+  register: unencypted_out
+
+- debug: var=unencypted_out
+  when: debug_flag
+
+- set_fact:
+    unencrypted_priv_key: "{{ unencypted_out | get_in(['stdout_lines'], '') }}"
+  when: "ssh_file_base|default('') != ''"
+
+- debug: var=unencrypted_priv_key
+  when: debug_flag
+
+- set_fact:
+    push_junos_ssh_host_key: "{{
+      [
+        'rm -f /etc/ssh/ssh_host_ecdsa_key',
+        'rm -f /etc/ssh/ssh_host_ecdsa_key.pub',
+
+        'rm -f /etc/ssh/ssh_host_dsa_key',
+        'rm -f /etc/ssh/ssh_host_dsa_key.pub',
+
+        'rm -f /etc/ssh/ssh_host_rsa_key',
+        'rm -f /etc/ssh/ssh_host_rsa_key.pub',
+
+        '',
+        'cat > /config/ssh_host_rsa_key <<EOL>>'
+      ]
+    + unencrypted_priv_key | zip_lists([' <<EOL>>'])
+    + [
+        ' <<EOL>>',
+        '<<CTRL_D>>',
+        '<<SLEEP=4>>',
+        '',
+        'chmod 0600 /config/ssh_host_rsa_key',
+        '',
+        'ssh-keygen -y -f /config/ssh_host_rsa_key > /config/ssh_host_rsa_key.pub',
+        '',
+        'ln -s /config/ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key',
+        'ln -s /config/ssh_host_rsa_key.pub /etc/ssh/ssh_host_rsa_key.pub',
+        ''
+      ]
+    }}"
+  when: "ssh_file_base|default('') != ''"
+
+- set_fact:
+    upload_config_cmd: "{{
+      [
+        'cat > /var/tmp/init_config <<EOL>>'
+      ]
+    + (   lookup('file', config_file)
+        | replace('\\\"', '\"')
+        | replace(\"'\",  '\"')
+      ).split('\n') | zip_lists([' <<EOL>>'])
+    + [
+        '<<CTRL_D>>',
+        '<<SLEEP=20>>',
+        ''
+      ]
+    }}"
+
+- name: Register partial Junos config as list of 'set' commands
+  set_fact:
+    os_commands: "{{
+        [
+          'start shell',
+          ''
+        ]
+      + push_junos_ssh_host_key | default([])
+      + upload_config_cmd
+      + [
+          'exit',
+          'configure',
+          '<<SLEEP=1>>',
+          '',
+          'load merge /var/tmp/init_config',
+          '<<SLEEP=3>>',
+          '',
+          'commit and-quit',
+          '<<SLEEP=5>>',
+          '',
+          'show interfaces terse | no-more | grep inet ',
+          '<<SLEEP=2>>',
+          ''
+        ]
+    }}"
