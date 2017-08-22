@@ -1,0 +1,84 @@
+## Requires: Ansible == 2.2.0.0
+---
+- name: Get Facts
+  hosts: all
+  connection: local
+  gather_facts: no
+  roles:
+    - napalm
+  vars:
+    fact_module: "{{ platform.os }}_facts"
+    currentdate: "{{lookup('pipe','date +%Y%m%d%H%M%S')}}"
+    build_dir: "../../logs/factcache"
+    fact_file: "{{ build_dir }}/{{ inventory_hostname }}.yaml"
+    optionalargs: {'dest_file_system': 'flash://'}
+    platform_facts: "{{ platform.os }}_facts"
+  vars_prompt:
+    - name: "user_name"
+      prompt: "Username"
+      private: no
+      default:
+    - name: "user_pass"
+      prompt: "Password (press return to use SSH key, or blank password)"
+      default:
+    # - name: "fact"
+    #   prompt: "Specify fact to get"
+    #   private: no
+    #   default: facts
+
+  tasks:
+    - name: 'Ensure directory exists ...'
+      file: path={{ build_dir }} state=directory
+
+    - name: 'Clearing old data ...'
+      local_action: copy content='' dest={{ fact_file }} force=yes
+
+    # - name: 'Getting facts from device'
+    #   napalm_get_facts: >
+    #     hostname={{ inventory_hostname }}
+    #     username={{ user_name }}
+    #     password={{ user_pass }}
+    #     dev_os={{ platform.os }}
+    #     optional_args={{ optionalargs }}
+    #     filter=['{{fact}}']
+    #   register: napalm_facts
+
+    - name: 'gather Junos facts'
+      when: '"junos" in platform.os'
+      junos_facts: >
+        host={{ inventory_hostname }}
+        password={{ user_pass }}
+        username={{ user_name }}
+      register: junos_facts
+
+    - name: 'gather IOS facts'
+      when: '"ios" in platform.os'
+      ios_facts: >
+        host={{ inventory_hostname }}
+        password={{ user_pass }}
+        username={{ user_name }}
+      register: ios_facts
+
+    - name: 'print hostvars'
+      with_items:
+        # - napalm_facts
+        - "{{ platform_facts }}"
+      debug: var=hostvars[inventory_hostname]["{{ item }}"]
+      register: printvars
+
+    - name: 'Storing facts in {{ build_dir }} ...'
+      blockinfile:
+        marker: ""
+        dest: "{{ fact_file }}"
+        block: |
+          {{ item|to_yaml }}
+      with_items:
+        # - "{{napalm_facts}}"
+        - "{{junos_facts}}"
+        - "{{ios_facts}}"
+
+    - name: 'Clean up file ...'
+      lineinfile: dest="{{fact_file}}" state=absent regexp='.*skipped'
+
+    - name: 'Print facts ...'
+      debug: msg={{ lookup('file', fact_file).split('\n') }}
