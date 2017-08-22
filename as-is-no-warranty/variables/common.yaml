@@ -1,0 +1,46 @@
+current_time: "{{ lookup('pipe','date \"+%Y-%m-%d_%H_%M_%S\"') }}"
+ansible_box: "{{ lookup('pipe','hostname') }}"
+
+build_dir:    "/var/tmp/build/netops/{{ inventory_hostname }}"
+
+getconf_base: "{{ build_dir }}/running_config."
+
+config_file:  "{{ build_dir }}/generated_config.txt"
+diff_file:    "{{ build_dir }}/generated_config.diff"
+log_file:     "{{ build_dir }}/generated_config.log"
+
+debug_flag:    "{{  (debug   |default(False)) | bool }}"
+verbose_flag:  "{{  (verbose |default(True))  | bool }}"
+cleanup_flag:  "{{ ((cleanup |default(True))  | bool) or (frag_list != 'all') }}"
+
+console_server: "catdog.otcorp.opentable.com"
+
+dev_os:       "{{ platform.os }}"
+tcl_script:   "{{ playbook_dir }}/roles/init_via_console/scripts/expect-cmd"
+tcl_params:   "{{ console_server }} {{ dev_os }} {{ inventory_hostname }}"
+
+napalm_supported: ['eos', 'junos', 'iosxr', 'fortios', 'ibm', 'ios', 'panos']
+
+deploy_target: "{{ inventory_hostname
+  if   (deploy is not defined)
+    or (deploy|upper in ['TRUE', 'FALSE'])
+    or (deploy[0] in '0123456789')
+    or (dev_os not in ['ios', 'nxos'])
+    or ('sflab-' not in deploy)
+  else deploy }}"
+
+target_common_console_fragments: # common between build_config and init_console
+  - vrf
+  - static
+  - options
+  - protocols
+  - hostname
+  - users
+  - ssh
+
+target_specific_console_fragments: # will be excluded from build_config for target
+  - mgmt
+  - dns
+  - secrets
+  - tacacs
+  - aaa

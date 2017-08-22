@@ -1,0 +1,102 @@
+---
+- name: Build entire network config
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  vars_prompt:
+    - name: "frag_list"
+      prompt: "which fragments? (frag1|frag2...); type 'help' for list; default="
+      private: no
+      default: all
+    - name: "user_name"
+      prompt: "Username"
+      private: no
+      default:
+    - name: "user_pass"
+      prompt: "Password (press return to use SSH key, or blank password)"
+      default:
+
+  vars:
+    rollback_flag: "{{  (rollback|default(True))  | bool }}"
+    deploy_flag:   "{{ deploy is defined }}"
+    confirm_min:   "{{ deploy|int if ((deploy|default(0)) | int) > 0 else 0 }}"
+    napalm_extra:  "{ 'dest_file_system': '{{ device_flash | default('') }}' }"
+
+    cmd_timeout: 120
+
+    cisco_provider_common:
+      username: "{{ user_name }}"
+      password: "{{ user_pass }}"
+      timeout: "{{ cmd_timeout }}"
+
+    nxos_provider_cli:   "{{ cisco_provider_common | combine({'transport': 'cli'}) }}"
+    nxos_provider_read:  "{{ nxos_provider_cli | combine({'host': inventory_hostname}) }}"
+    nxos_provider_write: "{{ nxos_provider_cli | combine({'host': deploy_target}) }}"
+
+  pre_tasks:
+    - include_vars: "vars/common.yaml"
+    - name: Freeze the name of a NXOS checkpoint file
+      set_fact:
+        currenttime: "{{ current_time }}"
+        cp_file_name: "{{ flash_backup_folder + '/ansible_cp_' + current_time }}"
+    - set_fact:
+        all_vars: {
+          'build_dir':     "{{ build_dir     }}",
+          'debug_flag':    "{{ debug_flag    }}",
+          'verbose_flag':  "{{ verbose_flag  }}",
+          'cleanup_flag':  "{{ cleanup_flag  }}",
+          'deploy_flag':   "{{ deploy_flag   }}",
+          'confirm_min':   "{{ confirm_min   }}",
+          'dev_os':        "{{ dev_os        }}",
+          'cmd_timeout':   "{{ cmd_timeout   }}",
+          'user_name':     "{{ user_name     }}",
+          'napalm_extra':  "{{ napalm_extra  }}",
+          'currenttime':   "{{ currenttime   }}",
+          'cp_file_name':  "{{ cp_file_name  }}",
+          'rollback_flag': "{{ rollback_flag }}",
+          'deploy_target': "{{ deploy_target }}",
+        }
+
+    - include_vars: ../../vault/passwords.yaml
+      when: item in frag_list
+      with_items:
+        - all
+        - tacacs
+        - secrets
+
+    - include_vars: ../../vault/keys.yaml
+      when: item in frag_list
+      with_items:
+        - all
+        - ospf
+        - vrrp
+        - bgp
+
+    - include_vars: ../../vault/tunnel_keys.yaml
+      when: item in frag_list
+      with_items:
+        - all
+        - tunnels
+
+  roles:
+    - common
+    - napalm
+    - Juniper.junos
+    - register_fragments
+    - { role: get_runtime_status, when: "(dev_os in ['nxos'])
+          and (inventory_hostname == deploy_target)"
+      }
+    - build_fragments
+    - { role: deploy_per_fragment, when: "(debug_flag == True)
+          and (custom_frag_src is not defined)
+          and (dev_os in ['junos'])"
+      }
+    - assemble_config
+    - { role: apply_transformer, when: "inventory_hostname != deploy_target" }
+    - { role: get_config, FROM_HOST: "{{ inventory_hostname }}", when: "inventory_hostname != deploy_target" }
+    - { role: show_diff,          when: "(dev_os in napalm_supported) and (inventory_hostname == deploy_target)"}
+    - { role: deploy_config,      when: "deploy_flag and (dev_os != 'nxos')" }
+    - { role: deploy_nxos_config, when: "deploy_flag and (dev_os == 'nxos')" }
+    - { role: get_config, FROM_HOST: "{{ deploy_target }}", when: "inventory_hostname != deploy_target" }
+    - { role: file_diff,          when: "(inventory_hostname != deploy_target)"}

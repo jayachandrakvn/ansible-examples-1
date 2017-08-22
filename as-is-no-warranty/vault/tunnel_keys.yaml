@@ -1,0 +1,29 @@
+---
+# Tunnel keys are separated from other 'keys' vault file
+# simply because of the volume of VPN tunnels alone.
+# Also VPN tunnels changed more often than other parts of the config.
+
+#
+# AWS VPC is usually connected with a pair of redundant VPN tunnels.
+# Shared keys are coming from AWS, we just store them to produce
+# our side of VPN tunnel configuration using Ansible
+#
+aws_keys:
+  # sc-gre-1 router
+  '9d2d1be9-0': 'aaaa'  # Tu1
+  '9d2d1be9-1': 'bbbb'  # Tu2 (backup for Tu1)
+  '05712340-0': 'cccc'  # Tu3
+  '05712340-1': 'dddd'  # Tu4 (backup for Tu3)
+
+#
+# OpenTable VPN tunnels (IntraNet)
+# Two keys - one for IPSEC IKE, and other one for OSPF per tunnel
+# Will use encrypted version of secrets when available
+#
+tunnel_keys:
+  '4': # new primary tunnel sf3s3-gw-2 to boom-fw-1
+    ike:  'aaaaa'
+    ike_junos: "$9$bbbbb"
+    key: 'ccccc'
+    key_junos: "$9$ddddd"
+    key_ios: '1eeeee'
