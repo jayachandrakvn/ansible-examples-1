@@ -1,1 +1,1 @@
-Examples of reusable jinja2 macros
+Examples of reusable jinja2 macros - only available if you start local WEB server
