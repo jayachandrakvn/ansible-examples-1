@@ -49,9 +49,9 @@ In fact, you may take a look at all static examples (related to python filters) 
 ```
 
 ## Start local webserver to extend Ansible dynamic inventory further
-When you enable additional dynamic inventory via local WEB server (details below), then you will see even more targets [to play with] in your total inventory, which, at this point, will be a combination of one static inventory file and two dynamic inventory scripts (one of those executed locally, and the other one calls WEB service you are about to start). To start very simple WEB server on your local box, you need to execute this command:
+When you enable additional dynamic inventory via local WEB server (details below), then you will see even more targets [to play with] in your total inventory, which, at this point, will be a combination of one static inventory file and two dynamic inventory scripts (one of those executed locally, and the other one calls WEB service you are about to start). To start very simple WEB server on your local box, you need to execute this command (if you do not mind debug output to the console):
 ```
-(venv) user@host:~/ansible-examples $ webserver/webserver.rb /dev/null &
+(venv) user@host:~/ansible-examples $ webserver/webserver.rb  &
 ```
 Assuming that the webrick (ruby-based) web server started successfuly, one may verify what Ansible dynamic inventory would look like by running CLI command like this: "curl http://localhost:8880/dynamic_inventory | jq '.'". Note that you might need to install packages like 'curl' and 'jq' first. 
 
@@ -89,4 +89,4 @@ and so on...
 ### Just a side note...
 The 'example.yaml' playbook and its roles & plays under 'ansible-demo/playbooks' are nothing like the real ones that OpenTable uses for its private Ansible repo. They are oversimplified to do just one thing - run a small piece of code as standalone demo...
 Exposing real playbooks is hard because they tightly integrated with the overall data structure and file structure of the entire project, and we have not put too much effort (yet) to make it more generic.
-We copied some fragments of our code under '~/ansible-examples/as-is-no-warranty', but those will not work - they are "display only". It still might give you an idea or two, or maybe you would realized they are sub-optimal in one way or the other (that is absolutely plausible, we know that).
+We copied some fragments of our code under '~/ansible-examples/as-is-no-warranty', but those will not work - they are "display only". Looking at those might give you an idea or two, or maybe you would realized they are sub-optimal in one way or the other (that is absolutely plausible, we know that), and you can do it better. That would justify the reason why we put this repo in a first place!
