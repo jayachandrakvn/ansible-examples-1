@@ -1,1 +1,1 @@
-Using inline jinja2 as values for YAML variables
+Using inline jinja2 inside YAML - only available if you start local WEB server
