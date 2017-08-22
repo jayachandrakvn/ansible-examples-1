@@ -22,3 +22,5 @@ It also assumes that your Ansible box (where you executing that script) has a pr
 
 7) __gen_ssh_keys.yaml__ is also an interesting example that allows to reuse existing SSH keys for devices that already had been provisioned that way. If SSH key is not found (but required - setting inside Ansible host_var config) then new SSH RSA key is generated.
 Private key is always stored in encrypted format. Some OS will take the encrypted private key (and will ask for passphrase), others would need unencrypted private key, which is produced on-the-fly so it __is not__ stored in clear text format on Ansible server.
+
+8) __combine_facts.yaml__ is built to pull facts from a network device and store them locally, in order to provide a way for operators to quickly check device facts such as serialnumber, hostname, version, etc. An example of a fact file is stored in as-is-no-warranty/factcache
