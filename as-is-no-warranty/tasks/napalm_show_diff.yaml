@@ -1,0 +1,18 @@
+---
+# This code only works if "napalm" role was added to playbook
+
+- name: "Generating diff as {{ diff_file }} ..."
+  napalm_install_config:
+    timeout: "{{ cmd_timeout }}"
+    hostname: "{{ inventory_hostname }}"
+    username: "{{ user_name }}"
+    password: "{{ user_pass }}"
+    dev_os: "{{ dev_os }}"
+    optional_args: "{{ napalm_extra }}"
+    config_file: "{{ config_file }}"
+    commit_changes: False
+    replace_config: no
+    diff_file: "{{ diff_file }}"
+
+- name: "Print running config diff ..."
+  debug: msg="{{ lookup('file', diff_file).split('\n') }}"

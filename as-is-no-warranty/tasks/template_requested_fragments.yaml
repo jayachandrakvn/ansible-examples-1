@@ -1,0 +1,21 @@
+---
+- stat: path="{{role_path}}/templates/{{ item.name  }}/{{ item.name }}_{{ dev_os }}.j2"
+  register: src_files
+  with_items: "{{ reduced_frag }}"
+
+- debug: var=src_files
+  when: debug_flag
+
+- name: "Generating config fragments"
+  template: >
+    src={{ item.1.name  }}/{{ item.1.name }}_{{ dev_os }}.j2
+    dest="{{ [
+       build_dir,
+      '/frags/',
+      item.1.prefix,
+      '_',
+      item.1.name,
+      '.conf'
+      ] | join() }}"
+  with_indexed_items: "{{ reduced_frag }}"
+  when: src_files.results[item.0].stat.exists

@@ -1,0 +1,46 @@
+---
+- name: Initialize SSH for Ansible to be able to connect
+  hosts: all
+  connection: local
+  gather_facts: no
+
+#
+# Assumptions: the box was wiped out manually with
+# 'write erase' command, and it is now reachable via OT serial console
+#
+  vars:
+    user_name: "root"  # pre-fixed name for this playbook
+    nxos_lag_facts: {}
+    nxos_vpc_facts: {}
+    nxos_int_facts: {}
+
+  pre_tasks:
+    - include_vars: "vars/common.yaml"
+    - include_vars: "../../vault/passwords.yaml"
+    - set_fact:
+        currenttime: "{{ current_time }}"
+        user_pass: "{{ vault.root_password[tacacs_group_name].cleartext_key }}"
+    - set_fact:
+        ssh_passphrase: "{{ user_pass }}"
+
+    - set_fact:
+        all_vars: {
+          'verbose_flag': "{{ verbose_flag }}",
+          'debug_flag':   "{{ debug_flag }}",
+          'dev_os':       "{{ dev_os }}",
+          'tcl_script':   "{{ tcl_script }}",
+          'tcl_params':   "{{ tcl_params }}"
+        }
+
+  roles:
+    - gen_new_ssh_keys
+    - common
+    - { role: register_fragments, frag_list: "{{
+          ( target_common_console_fragments
+            + target_specific_console_fragments
+          ) | join('|')
+          }}" # to simulate user input
+      }
+    - { role: build_fragments, mgmt_interface: "{{ mgmt_interface_oob }}" }
+    - assemble_config
+    - init_via_console

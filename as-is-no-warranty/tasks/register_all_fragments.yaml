@@ -1,0 +1,62 @@
+---
+- name: "Registering all fragments names as facts"
+  set_fact:
+    all_frag: [
+      { name: 'cleanup',    prefix: '000' },
+      { name: 'vlans',      prefix: '005' },
+      { name: 'vrf',        prefix: '010' },
+      { name: 'mgmt',       prefix: '015' },
+      { name: 'dns',        prefix: '020' },
+      { name: 'syslog',     prefix: '030' },
+      { name: 'dhcp',       prefix: '040' },
+      { name: 'secrets',    prefix: '050' },
+      { name: 'protocols',  prefix: '060' },
+      { name: 'track',      prefix: '100' },
+      { name: 'tacacs',     prefix: '110' },
+      { name: 'aaa',        prefix: '120' },
+      { name: 'ssh',        prefix: '300' },
+      { name: 'snmp',       prefix: '400' },
+      { name: 'zones',      prefix: '410' },
+      { name: 'policymap',  prefix: '420' },
+      { name: 'interfaces', prefix: '430' },
+      { name: 'tunnels',    prefix: '440' },
+      { name: 'mstp',       prefix: '450' },
+      { name: 'bgp',        prefix: '460' },
+      { name: 'netflow',    prefix: '470' },
+      { name: 'ospf',       prefix: '475' },
+      { name: 'dualisp',    prefix: '480' },
+      { name: 'static',     prefix: '485' },
+      { name: 'policies',   prefix: '490' },
+      { name: 'ntp',        prefix: '500' },
+      { name: 'storm',      prefix: '510' },
+      { name: 'vpcs',       prefix: '520' },
+      { name: 'analyzer',   prefix: '530' },
+      { name: 'ipmon',      prefix: '540' },
+      { name: 'eem',        prefix: '550' },
+      { name: 'vrrp',       prefix: '600' },
+      { name: 'users',      prefix: '610' },
+      { name: 'voip',       prefix: '710' },
+      { name: 'acl',        prefix: '720' },
+      { name: 'aspath',     prefix: '725' },
+      { name: 'routemap',   prefix: '730' },
+      { name: 'nat',        prefix: '740' },
+      { name: 'qos',        prefix: '800' },
+      { name: 'mac',        prefix: '810' },
+      { name: 'options',    prefix: '900' },
+      { name: 'comments',   prefix: '998' },
+      { name: 'hostname',   prefix: '999' }
+    ]
+
+- name: "Print available frags"
+  debug: msg={{ [
+    "Custom fragment - starts with 'custom:' prefix, followed by file name",
+    "Regular fragments - type the list of names (see below) separated by '|'",
+     all_frag,
+     "",
+     "Example_1 - 'custom:users', which means file templates/users.j2 at ansible root",
+     "Example_2 - 'ntp|bgp|users', which means 3 fragments under build_fragents role",
+   ] }}
+  when: "'help' in frag_list"
+
+- fail: msg="Canceled play due to 'help' option"
+  when: "'help' in frag_list"
