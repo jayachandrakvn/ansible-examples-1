@@ -16,7 +16,7 @@ chardet==3.0.4
 Click==7.0
 ConfigArgParse==0.14.0
 coverage==4.5.2
-cryptography==2.2.2
+cryptography==2.3
 decorator==4.4.0
 deepdiff==3.3.0
 Deprecated==1.2.6
