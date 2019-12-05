@@ -87,7 +87,7 @@ terminal==0.4.0
 textfsm==0.4.1
 toml==0.10.0
 traitlets==4.3.2
-urllib3==1.24.1
+urllib3==1.24.2
 wcwidth==0.1.7
 wrapt==1.11.2
 yamllint==1.17.0
