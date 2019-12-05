@@ -1,0 +1,25 @@
+
+ansible_facts:
+  HOME: /cf/var/home/username
+  RE0: {last_reboot_reason: '0x1:power cycle/failure', model: RE-SRX220H2-POE, status: OK,
+    up_time: '371 days, 17 hours, 21 minutes, 13 seconds'}
+  domain: example.opentable.com
+  fqdn: example-fw-1.example.opentable.com
+  has_2RE: false
+  hostname: example-fw-1
+  ifd_style: CLASSIC
+  model: SRX220H2-POE
+  personality: SRX_BRANCH
+  serialnumber: ABC123
+  srx_cluster: false
+  switch_style: VLAN
+  vc_capable: false
+  version: 12.1X44-D35.5
+  version_info:
+    build: 5
+    major: [12, 1]
+    minor: [44, D, 35]
+    type: X
+
+
+

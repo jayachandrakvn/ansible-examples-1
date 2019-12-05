@@ -1,5 +1,8 @@
 ---
-- src: https://github.com/napalm-automation/napalm-ansible/
-  version: master
-  name: napalm
-  path: roles
+# you can use this to install the napalm role via galaxy, but it seems broken,
+# and can be installed with pip now anyways, so we comment this out for now.
+
+# - src: https://github.com/napalm-automation/napalm-ansible/
+#   version: master
+#   name: napalm
+#   path: roles

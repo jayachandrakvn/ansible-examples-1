@@ -14,7 +14,7 @@ The hacky coding examples supposed to provoke extra "thinking" (like: "what does
 - the other dynamic inventory script is very simple - it queries a local WEB server that you need to start manually. The web server script is another example how to generate dynamic inventory from a 'source of truth' file where objects (hosts) have properties (attributes). This example might be particularly interesting for others because a WEB service could be exposed to multiple consumers (dev environment, prod/operations environment - everybody need host inventory).
 - there are several examples about custom python filters OpenTable developed for its private Ansible project. Some of most common and more generic filters are publishes as examples (but not all).
 - coding examples: reusable code fragments (include and macro). Those are pretty small and pretty basic, but they give you an idea...
-- reusable YAML definitions: we can call them 'in-line jinja2 templates' because that is what they are by nature. When you define data object inside YAML file (host_vars, or group_vars - does not matter), the key is always immutable (string), and the value could be an "expression" in a form of jinja2 expression. That means you can manipulate data inside your YAML file. That allows for complex inheritance between host_vars and group_vars and global_vars (only watch for potencial loops). The lazy evaluation by Ansible would obtain the real value during the execution time.
+- reusable YAML definitions: we can call them 'in-line jinja2 templates' because that is what they are by nature. When you define data object inside YAML file (host_vars, or group_vars - does not matter), the key is always immutable (string), and the value could be an "expression" in a form of jinja2 expression. That means you can manipulate data inside your YAML file. That allows for complex inheritance between host_vars and group_vars and global_vars (only watch for potential loops). The lazy evaluation by Ansible would obtain the real value during the execution time.
 
 ## Interactive play with examples
 If you wish to have hands-on experience with all examples and code fragments available in this repo, you may want to build python virtual environment by following those steps:
@@ -22,7 +22,6 @@ If you wish to have hands-on experience with all examples and code fragments ava
 - virtualenv --no-site-packages venv
 - source venv/bin/activate
 - pip install -r requirements.txt
-- ansible-galaxy install -r requirements.yaml
 
 Then you should be able to run ansible-playbook command like this:
 ```
